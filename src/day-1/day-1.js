@@ -1,27 +1,33 @@
 const fs = require('fs')
 const path = require('path')
 
-const solution = () => {
-  return new Promise((resolve, reject) => {
+const solution = () =>
+  new Promise((resolve, reject) => {
     fs.readFile(path.join(__dirname, 'input'), 'utf8', (err, data) => {
       if (err) {
         reject(err)
       }
-  
+
       const sumTo = 2020
 
-      const entries = data.trim().split('\n').map(entry => Number.parseInt(entry))
+      const entries = data
+        .trim()
+        .split('\n')
+        .map((entry) => Number.parseInt(entry, 10))
 
-      for (const a of entries) {
-        const i = entries.indexOf(sumTo - a) 
+      entries.forEach((entry) => {
+        const i = entries.indexOf(sumTo - entry)
         if (i !== -1) {
-          resolve(a * entries[i])
+          resolve(entry * entries[i])
         }
-      }
+      })
 
-      reject(`Could not find two numbers that sum to ${sumTo} in ${entries}`)
+      reject(
+        new Error(
+          `Could not find two numbers that sum to ${sumTo} in ${entries}`
+        )
+      )
     })
   })
-}
 
 module.exports = solution
