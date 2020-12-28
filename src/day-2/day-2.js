@@ -6,48 +6,66 @@ const countOccurrences = (str, value) => {
   return (str.match(regExp) || []).length
 }
 
-class PasswordValidator {
-  static parse(line) {
-    const [policyRange, letter, password] = line.split(' ')
+const parse = (line) => {
+  const [policyRange, letter, password] = line.split(' ')
 
-    const [lowNumberOfTimes, highNumberOfTimes] = policyRange.split('-')
+  const [firstNumber, secondNumber] = policyRange.split('-')
 
-    return {
-      lowNumberOfTimes: Number.parseInt(lowNumberOfTimes, 10),
-      highNumberOfTimes: Number.parseInt(highNumberOfTimes, 10),
-      letter: letter[0],
-      password,
-    }
-  }
-
-  static validate(line) {
-    const parsedLine = PasswordValidator.parse(line)
-
-    const letterOccurrences = countOccurrences(
-      parsedLine.password,
-      parsedLine.letter
-    )
-
-    return (
-      letterOccurrences >= parsedLine.lowNumberOfTimes &&
-      letterOccurrences <= parsedLine.highNumberOfTimes
-    )
+  return {
+    firstNumber: Number.parseInt(firstNumber, 10),
+    secondNumber: Number.parseInt(secondNumber, 10),
+    letter: letter[0],
+    password,
   }
 }
 
-const solutionPartOne = () =>
+const validatePartOne = (line) => {
+  const parsedLine = parse(line)
+
+  const letterOccurrences = countOccurrences(
+    parsedLine.password,
+    parsedLine.letter
+  )
+
+  return (
+    letterOccurrences >= parsedLine.firstNumber &&
+    letterOccurrences <= parsedLine.secondNumber
+  )
+}
+
+const validatePartTwo = (line) => {
+  const parsedLine = parse(line)
+
+  const hasFirstPosition =
+    parsedLine.password[parsedLine.firstNumber - 1] === parsedLine.letter
+  const hasSecondPosition =
+    parsedLine.password[parsedLine.secondNumber - 1] === parsedLine.letter
+
+  return hasFirstPosition !== hasSecondPosition
+}
+
+const readInputFile = () =>
   new Promise((resolve, reject) => {
     fs.readFile(path.join(__dirname, 'input'), 'utf8', (err, data) => {
       if (err) {
         reject(err)
       }
 
-      const lines = data.trim().split('\n')
-
-      resolve(lines.filter((line) => PasswordValidator.validate(line)).length)
+      resolve(data.trim().split('\n'))
     })
   })
 
+const solutionPartOne = async () => {
+  const lines = await readInputFile()
+  return lines.filter((line) => validatePartOne(line)).length
+}
+
+const solutionPartTwo = async () => {
+  const lines = await readInputFile()
+  return lines.filter((line) => validatePartTwo(line)).length
+}
+
 module.exports = {
   solutionPartOne,
+  solutionPartTwo,
 }
