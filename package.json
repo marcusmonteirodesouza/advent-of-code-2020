@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "Solutions to Advent of Code 2020",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "Marcus Vinicius Monteiro de Souza",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
 }
